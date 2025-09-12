@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inglés en Acción v2.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Mejora estética: Un gradiente suave es más agradable a la vista */
+            background: linear-gradient(135deg, #e9780e 0%, #ff933ae0 100%);
+        }
+
+        /* Estilo para los botones seleccionados en el juego 2 */
+        .selected {
+            background-color: #8dda34 !important; /* Indigo más intenso */
+            color: white !important;
+            border-color: #4f46e5 !important;
+            transform: scale(1.05);
+            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Estilo para botones de palabras ya usadas en el juego 1 */
+        .disabled-word {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(0.95);
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Efecto de transición general para botones */
+        button {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* Estilo para el contenedor principal para centrarlo mejor */
+        .main-container {
+            max-width: 900px; /* Un poco más ancho para mejor distribución */
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto main-container p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-10">
+            <img src="logo3.png" class="h-24 w-auto mx-auto mb-4" alt="Logo de Inglés en Acción">
+            <h1 class="text-white font-bold text-5xl tracking-tight">INGLES EN ACCION</h1>
+            <p class="text-white text-indigo-200 mt-2">Mejora tu gramática y vocabulario con estos juegos interactivos.</p>
+        </header>
+
+        <main class="space-y-12">
+            <section id="game1" class="bg-white p-8 rounded-2xl shadow-2xl">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center gap-3"><i class="fas fa-random text-indigo-500"></i>1. Forma la oración correcta</h2>
+                <p class="text-gray-600 mb-6">Haz clic en las palabras para formar una oración con la estructura correcta.</p>
+                <div id="scrambled-words" class="flex flex-wrap gap-3 mb-4 justify-center"></div>
+                <div class="bg-gray-100 p-4 rounded-lg min-h-[60px] text-center mb-4 border-2 border-dashed">
+                    <p id="userSentence" class="font-semibold text-xl text-indigo-700">&nbsp;</p>
+                </div>
+                <p id="feedback-game1" class="text-center font-semibold text-lg min-h-[28px] mb-4"></p>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <button id="check-btn-1" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transform hover:scale-105"><i class="fas fa-check mr-2"></i>Verificar</button>
+                    <button id="reset-btn-1" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transform hover:scale-105"><i class="fas fa-arrow-right mr-2"></i>Siguiente</button>
+                    <button id="speak-btn" class="bg-purple-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-600 transform hover:scale-105"><i class="fas fa-microphone-alt mr-2"></i>Pronunciar</button>
+                </div>
+                <p id="speech-result" class="text-center mt-4 text-gray-600 min-h-[24px]"></p>
+            </section>
+
+            <section id="game2" class="bg-white p-8 rounded-2xl shadow-2xl">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center gap-3"><i class="fas fa-list-check text-indigo-500"></i>2. Selecciona los verbos correctos.</h2>
+                <p class="text-gray-600 mb-6">Para el verbo en infinitivo, selecciona la opción correcta para cada categoría.</p>
+                <div class="text-center mb-6 bg-indigo-50 py-4 rounded-lg">
+                    <p class="text-gray-600 text-lg">Infinitivo:</p>
+                    <p id="infinitive-display" class="text-4xl font-bold text-indigo-600"></p>
+                </div>
+                
+                <div id="verb-options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+                <p id="feedback-game2" class="text-center font-semibold text-lg min-h-[28px] my-6"></p>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <button id="check-btn-2" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transform hover:scale-105"><i class="fas fa-check mr-2"></i>Comprobar</button>
+                    <button id="reset-btn-2" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transform hover:scale-105"><i class="fas fa-arrow-right mr-2"></i>Siguiente Verbo</button>
+                </div>
+                <p id="score" class="text-center font-bold text-3xl mt-6 text-indigo-600">Puntaje: 0</p>
+            </section>
+
+            <section id="game3" class="bg-white p-8 rounded-2xl shadow-2xl">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center gap-3"><i class="fas fa-pen-alt text-indigo-500"></i>3. Construye la Oración</h2>
+                <p class="text-gray-600 mb-4">Usa las palabras base para escribir una oración completa en afirmativo, negativo o interrogativo; usando (didn't/did/did?).</p>
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-lg mb-4">
+                    <p class="font-bold">Palabras base:</p>
+                    <p id="sentence-prompt-base" class="text-lg"></p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                     <p id="sentence-type-prompt" class="text-center font-bold text-indigo-600 text-xl"></p>
+                </div>
+                <input type="text" id="user-input-3" class="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-lg" placeholder="Escribe tu oración aquí..." />
+                <p id="feedback-game3" class="text-center font-semibold text-lg min-h-[56px] my-4 flex items-center justify-center"></p>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <button id="submit-btn-3" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transform hover:scale-105"><i class="fas fa-check mr-2"></i>Comprobar</button>
+                    <button id="help-btn-3" class="bg-yellow-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-yellow-600 transform hover:scale-105"><i class="fas fa-lightbulb mr-2"></i>Ayuda</button>
+                    <button id="reset-btn-3" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transform hover:scale-105" disabled><i class="fas fa-arrow-right mr-2"></i>Siguiente</button>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="mt-12 text-center">
+            <p class="text-blanc-200">Derechos de autor: JUZUCA-2025 - Versión 2.0</p>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- BANCO DE DATOS ---
+        const verbBank = [
+            { id: 1, infinitive: "go", simple_past: "went", past_participle: "gone", spanish: "ir", type: "irregular" },
+            { id: 2, infinitive: "eat", simple_past: "ate", past_participle: "eaten", spanish: "comer", type: "irregular" },
+            { id: 3, infinitive: "see", simple_past: "saw", past_participle: "seen", spanish: "ver", type: "irregular" },
+            { id: 4, infinitive: "write", simple_past: "wrote", past_participle: "written", spanish: "escribir", type: "irregular" },
+            { id: 5, infinitive: "read", simple_past: "read", past_participle: "read", spanish: "leer", type: "irregular" },
+            { id: 6, infinitive: "run", simple_past: "ran", past_participle: "run", spanish: "correr", type: "irregular" },
+            { id: 7, infinitive: "swim", simple_past: "swam", past_participle: "swum", spanish: "nadar", type: "irregular" },
+            { id: 8, infinitive: "buy", simple_past: "bought", past_participle: "bought", spanish: "comprar", type: "irregular" },
+            { id: 9, infinitive: "make", simple_past: "made", past_participle: "made", spanish: "hacer", type: "irregular" },
+            { id: 10, infinitive: "learn", simple_past: "learned", past_participle: "learned", spanish: "aprender", type: "regular" },
+            { id: 11, infinitive: "teach", simple_past: "taught", past_participle: "taught", spanish: "enseñar", type: "irregular" },
+            { id: 12, infinitive: "sing", simple_past: "sang", past_participle: "sung", spanish: "cantar", type: "irregular" },
+            { id: 13, infinitive: "dance", simple_past: "danced", past_participle: "danced", spanish: "bailar", type: "regular" },
+            { id: 14, infinitive: "play", simple_past: "played", past_participle: "played", spanish: "jugar", type: "regular" },
+            { id: 15, infinitive: "talk", simple_past: "talked", past_participle: "talked", spanish: "hablar", type: "regular" },
+            { id: 16, infinitive: "walk", simple_past: "walked", past_participle: "walked", spanish: "caminar", type: "regular" },
+            { id: 17, infinitive: "cook", simple_past: "cooked", past_participle: "cooked", spanish: "cocinar", type: "regular" },
+            { id: 18, infinitive: "help", simple_past: "helped", past_participle: "helped", spanish: "ayudar", type: "regular" },
+            { id: 19, infinitive: "begin", simple_past: "began", past_participle: "begun", spanish: "empezar", type: "irregular" },
+            { id: 20, infinitive: "drink", simple_past: "drank", past_participle: "drunk", spanish: "beber", type: "irregular" }
+        ];
+
+        const sentenceTemplates = [
+            { base: "She / eat / pizza / yesterday", affirmative: "She ate pizza yesterday.", negative: "She did not eat pizza yesterday.", interrogative: "Did she eat pizza yesterday?" },
+            { base: "He / write / a book / last week", affirmative: "He wrote a book last week.", negative: "He did not write a book last week.", interrogative: "Did he write a book last week?" },
+            { base: "They / go / to the park / this morning", affirmative: "They went to the park this morning.", negative: "They did not go to the park this morning.", interrogative: "Did they go to the park this morning?" },
+            { base: "I / see / a movie / last night", affirmative: "I saw a movie last night.", negative: "I did not see a movie last night.", interrogative: "Did I see a movie last night?" },
+            { base: "We / play / football / every Saturday", affirmative: "We play football every Saturday.", negative: "We do not play football every Saturday.", interrogative: "Do we play football every Saturday?" },
+            { base: "She / read / books / often", affirmative: "She reads books often.", negative: "She does not read books often.", interrogative: "Does she read books often?" },
+            { base: "You / visit / Paris / next year", affirmative: "You will visit Paris next year.", negative: "You will not visit Paris next year.", interrogative: "Will you visit Paris next year?" },
+            { base: "They / buy / a new car / soon", affirmative: "They will buy a new car soon.", negative: "They will not buy a new car soon.", interrogative: "Will they buy a new car soon?" }
+        ];
+
+        // --- LÓGICA DEL JUEGO 1 ---
+        const scrambledContainer = document.getElementById("scrambled-words");
+        const userSentenceDisplay = document.getElementById("userSentence");
+        const feedback1 = document.getElementById("feedback-game1");
+        let correctSentence1 = "";
+        let currentWordButtons = [];
+
+        function setupGame1() {
+            const randomTemplate = sentenceTemplates[Math.floor(Math.random() * sentenceTemplates.length)];
+            correctSentence1 = randomTemplate.affirmative;
+            let currentWords = correctSentence1.replace(/[.?]/g, '').split(" ").sort(() => 0.5 - Math.random());
+            
+            scrambledContainer.innerHTML = "";
+            userSentenceDisplay.textContent = "";
+            feedback1.textContent = "";
+            feedback1.className = "text-center font-semibold text-lg min-h-[28px] mb-4";
+            currentWordButtons = [];
+
+            currentWords.forEach(word => {
+                const btn = document.createElement("button");
+                btn.textContent = word;
+                btn.className = "bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-indigo-100 transition transform hover:scale-105";
+                btn.onclick = () => {
+                    userSentenceDisplay.textContent += (userSentenceDisplay.textContent ? " " : "") + word;
+                    btn.classList.add('disabled-word');
+                    btn.disabled = true;
+                };
+                scrambledContainer.appendChild(btn);
+                currentWordButtons.push(btn);
+            });
+        }
+
+        document.getElementById("check-btn-1").onclick = () => {
+            const userAttempt = userSentenceDisplay.textContent.trim();
+            const correctNorm = correctSentence1.replace(/[.?]/g, '');
+
+            if (userAttempt.toLowerCase() === correctNorm.toLowerCase()) {
+                feedback1.textContent = "¡Correcto! 🎉";
+                feedback1.className = "text-center font-semibold text-green-600 text-lg min-h-[28px] mb-4";
+                currentWordButtons.forEach(btn => btn.disabled = true);
+            } else {
+                feedback1.textContent = "Intenta otra vez. La oración correcta es: '" + correctNorm + "'";
+                feedback1.className = "text-center font-semibold text-red-600 text-lg min-h-[28px] mb-4";
+            }
+        };
+
+        document.getElementById("reset-btn-1").onclick = setupGame1;
+        
+        const speechResult = document.getElementById("speech-result");
+        const speakBtn = document.getElementById("speak-btn");
+        
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            speakBtn.onclick = () => {
+                const sentenceToSpeak = userSentenceDisplay.textContent.trim();
+                if (!sentenceToSpeak) {
+                    speechResult.textContent = "Forma una oración primero para evaluarla.";
+                    return;
+                }
+                speechResult.textContent = "🎤 Escuchando...";
+                recognition.start();
+            };
+
+            recognition.onresult = (event) => {
+                const spokenText = event.results[0][0].transcript;
+                const userSentenceNorm = userSentenceDisplay.textContent.trim().toLowerCase().replace(/[.,!?'"]/g, '');
+                const spokenTextNorm = spokenText.trim().toLowerCase().replace(/[.,!?'"]/g, '');
+                
+                let resultHTML = `Tu pronunciación: "<em>${spokenText}</em>"`;
+                if (spokenTextNorm === userSentenceNorm) {
+                    resultHTML += " ✅ ¡Perfecto!";
+                } else {
+                    resultHTML += " ❌ No coincide exactamente.";
+                }
+                speechResult.innerHTML = resultHTML;
+            };
+            recognition.onerror = (event) => { speechResult.textContent = `Error de voz: ${event.error}. Permite el acceso al micrófono.`; };
+        } else {
+            speakBtn.disabled = true;
+            speechResult.textContent = "Tu navegador no soporta el reconocimiento de voz.";
+        }
+
+        // --- LÓGICA DEL JUEGO 2 ---
+        const infinitiveDisplay = document.getElementById('infinitive-display');
+        const optionsGrid = document.getElementById('verb-options-grid');
+        const feedback2 = document.getElementById('feedback-game2');
+        const scoreDisplay = document.getElementById('score');
+        let currentVerb = {};
+        let score2 = 0;
+        let userSelections = {};
+
+        const categories = [
+            { id: 'simple_past', title: 'Pasado Simple' },
+            { id: 'past_participle', title: 'Participio Pasado' },
+            { id: 'spanish', title: 'Significado Español' },
+            { id: 'type', title: 'Tipo de Verbo' }
+        ];
+
+        function setupGame2() {
+            feedback2.textContent = '';
+            feedback2.className = 'text-center font-semibold text-lg min-h-[28px] my-6';
+            optionsGrid.innerHTML = '';
+            userSelections = {};
+            currentVerb = verbBank[Math.floor(Math.random() * verbBank.length)];
+            infinitiveDisplay.textContent = currentVerb.infinitive;
+
+            categories.forEach(category => {
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'bg-gray-50 p-4 rounded-lg shadow-sm';
+                optionsContainer.innerHTML = `<h3 id="title-${category.id}" class="font-bold text-lg mb-3 text-gray-700">${category.title}</h3>`;
+                const buttonsWrapper = document.createElement('div');
+                buttonsWrapper.className = 'flex flex-col gap-2';
+                
+                const options = generateOptions(category.id);
+                options.forEach(optionText => {
+                    const btn = document.createElement('button');
+                    btn.textContent = optionText;
+                    btn.className = 'w-full text-left bg-white border-2 border-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-100 transition';
+                    btn.onclick = () => handleOptionClick(btn, category.id);
+                    buttonsWrapper.appendChild(btn);
+                });
+                
+                optionsContainer.appendChild(buttonsWrapper);
+                optionsGrid.appendChild(optionsContainer);
+            });
+        }
+
+        function generateOptions(categoryId) {
+            const correctOption = currentVerb[categoryId];
+            let options = new Set([correctOption]);
+            const allPossibleOptions = Array.from(new Set(verbBank.map(v => v[categoryId])));
+            while (options.size < 3 && allPossibleOptions.length > options.size) {
+                const randomOption = allPossibleOptions[Math.floor(Math.random() * allPossibleOptions.length)];
+                options.add(randomOption);
+            }
+            return Array.from(options).sort(() => Math.random() - 0.5);
+        }
+
+        function handleOptionClick(button, categoryId) {
+            userSelections[categoryId] = button.textContent;
+            const parent = button.parentElement;
+            Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+            button.classList.add('selected');
+        }
+
+        document.getElementById('check-btn-2').onclick = () => {
+            let correctCount = 0;
+            if (Object.keys(userSelections).length < categories.length) {
+                feedback2.textContent = "Por favor, selecciona una opción para cada categoría.";
+                feedback2.className = 'text-center font-semibold text-yellow-600 text-lg min-h-[28px] my-6';
+                return;
+            }
+
+            categories.forEach(category => {
+                const titleEl = document.getElementById(`title-${category.id}`);
+                // Limpiar feedback anterior
+                if (titleEl.querySelector('span')) titleEl.querySelector('span').remove();
+
+                const feedbackIcon = document.createElement('span');
+                if(userSelections[category.id] === currentVerb[category.id]) {
+                    correctCount++;
+                    feedbackIcon.textContent = ' ✅';
+                    feedbackIcon.className = 'text-green-500';
+                } else {
+                    feedbackIcon.textContent = ' ❌';
+                    feedbackIcon.className = 'text-red-500';
+                }
+                titleEl.appendChild(feedbackIcon);
+            });
+
+            if (correctCount === categories.length) {
+                feedback2.textContent = '¡Todas las respuestas son correctas! 🎉';
+                feedback2.className = 'text-center font-semibold text-green-600 text-lg min-h-[28px] my-6';
+                score2++;
+                scoreDisplay.textContent = `Puntaje: ${score2}`;
+            } else {
+                feedback2.textContent = `Tienes ${correctCount} de ${categories.length} correctas. ¡Sigue intentando!`;
+                feedback2.className = 'text-center font-semibold text-red-600 text-lg min-h-[28px] my-6';
+            }
+        };
+
+        document.getElementById('reset-btn-2').onclick = setupGame2;
+
+        // --- LÓGICA DEL JUEGO 3 (REDISEÑADA) ---
+        const sentencePromptBase = document.getElementById("sentence-prompt-base");
+        const sentenceTypePrompt = document.getElementById("sentence-type-prompt");
+        const userInput3 = document.getElementById("user-input-3");
+        const feedback3 = document.getElementById("feedback-game3");
+        const submitBtn3 = document.getElementById("submit-btn-3");
+        const resetBtn3 = document.getElementById("reset-btn-3");
+        const helpBtn3 = document.getElementById("help-btn-3");
+        
+        let currentTemplate = {};
+        let game3State = 'affirmative'; // Estados: 'affirmative', 'negative', 'interrogative'
+        const statePrompts = {
+            affirmative: 'Escribe la oración en modo AFIRMATIVO (+)',
+            negative: '¡Correcto! Ahora, en modo NEGATIVO (-)',
+            interrogative: '¡Muy bien! Finalmente, en modo INTERROGATIVO (?)'
+        };
+
+        function setupGame3() {
+            currentTemplate = sentenceTemplates[Math.floor(Math.random() * sentenceTemplates.length)];
+            sentencePromptBase.textContent = currentTemplate.base;
+            
+            game3State = 'affirmative';
+            sentenceTypePrompt.textContent = statePrompts[game3State];
+
+            userInput3.value = "";
+            userInput3.disabled = false;
+            feedback3.innerHTML = "";
+            feedback3.className = "text-center font-semibold text-lg min-h-[56px] my-4 flex items-center justify-center";
+            
+            submitBtn3.disabled = false;
+            resetBtn3.disabled = true;
+            resetBtn3.classList.add('opacity-50', 'cursor-not-allowed');
+            submitBtn3.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+        
+        // Función para normalizar y comparar oraciones
+        function compareSentences(userInput, correctSentence) {
+            // Quita espacios extra, convierte a minúscula y elimina el punto o interrogación final para una comparación más flexible.
+            const normalize = (str) => str.trim().toLowerCase().replace(/[.?]$/, '');
+            return normalize(userInput) === normalize(correctSentence);
+        }
+
+        submitBtn3.onclick = () => {
+            const userAnswer = userInput3.value;
+            if (!userAnswer) {
+                feedback3.textContent = "Por favor, escribe una oración.";
+                feedback3.className = "text-center font-semibold text-yellow-600 text-lg min-h-[56px] my-4 flex items-center justify-center";
+                return;
+            }
+
+            const correctAnswer = currentTemplate[game3State];
+            
+            if (compareSentences(userAnswer, correctAnswer)) {
+                // Si la respuesta es correcta, avanzamos al siguiente estado
+                if (game3State === 'affirmative') {
+                    game3State = 'negative';
+                    feedback3.textContent = "✅ ¡Excelente!";
+                    feedback3.className = "text-center font-semibold text-green-600 text-lg min-h-[56px] my-4 flex items-center justify-center";
+                    sentenceTypePrompt.textContent = statePrompts[game3State];
+                    userInput3.value = ""; // Limpiar para la siguiente oración
+                } else if (game3State === 'negative') {
+                    game3State = 'interrogative';
+                    feedback3.textContent = "✅ ¡Perfecto!";
+                    feedback3.className = "text-center font-semibold text-green-600 text-lg min-h-[56px] my-4 flex items-center justify-center";
+                    sentenceTypePrompt.textContent = statePrompts[game3State];
+                    userInput3.value = "";
+                } else if (game3State === 'interrogative') {
+                    // Completó las tres formas
+                    feedback3.innerHTML = `🎉 ¡Fantástico! Has completado las tres formas correctamente.`;
+                    feedback3.className = "text-center font-semibold text-green-600 text-lg min-h-[56px] my-4 flex items-center justify-center";
+                    userInput3.disabled = true;
+                    submitBtn3.disabled = true;
+                    submitBtn3.classList.add('opacity-50', 'cursor-not-allowed');
+                    resetBtn3.disabled = false; // Habilitar el botón de siguiente
+                    resetBtn3.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            } else {
+                // Si la respuesta es incorrecta
+                feedback3.innerHTML = `❌ No es del todo correcto. <br/> La respuesta esperada era: "<strong>${correctAnswer}</strong>"`;
+                feedback3.className = "text-center font-semibold text-red-600 text-lg min-h-[56px] my-4 flex items-center justify-center";
+            }
+        };
+
+        helpBtn3.onclick = () => {
+            feedback3.innerHTML = `
+                <div class="text-left text-sm">
+                    <p><strong>Afirmativa:</strong> ${currentTemplate.affirmative}</p>
+                    <p><strong>Negativa:</strong> ${currentTemplate.negative}</p>
+                    <p><strong>Interrogativa:</strong> ${currentTemplate.interrogative}</p>
+                </div>
+            `;
+             feedback3.className = "text-center font-semibold text-blue-600 text-lg min-h-[56px] my-4 flex items-center justify-center bg-blue-50 p-3 rounded-lg";
+        };
+        
+        resetBtn3.onclick = setupGame3;
+
+        // --- INICIALIZACIÓN DE LOS JUEGOS ---
+        setupGame1();
+        setupGame2();
+        setupGame3();
+    });
+    </script>
+</body>
+</html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inglés en Acción v2.0</title>
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+      /* ...tus estilos... */
+    </style>
+</head>
