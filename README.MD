@@ -1,5 +1,6 @@
 Inglés en Acción 
-Inglés en Acción es una página web interactiva y educativa diseñada para ayudar a estudiantes y usuarios a practicar y mejorar su gramática y vocabulario en inglés a través de tres juegos dinámicos. La interfaz es limpia, moderna y totalmente responsiva.
+
+Es página web interactiva y educativa diseñada para ayudar a estudiantes y usuarios a practicar y mejorar su gramática y vocabulario en inglés a través de tres juegos dinámicos. La interfaz es limpia, moderna y totalmente responsiva.
 
 Descripción de los Juegos
 El proyecto se compone de tres ejercicios principales:
@@ -42,5 +43,6 @@ Para ejecutar este proyecto en tu máquina local, solo sigue estos sencillos pas
 ________________________________________
 Autor
 •	JUZUCA-2025
+
 
 
